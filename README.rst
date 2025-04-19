@@ -23,8 +23,21 @@ Start by cloning the repository::
 
 Create a python virtualenv::
 
-    $ virtualenv modui-env
-    $ source modui-env/bin/activate
+    $ python3 -m venv myenv
+    $ source myenv/bin/activate
+
+Due to incompatibilities from Python 3.10, if Python > 3.10 is in use run:
+
+```sh
+if [ -e modui-env/lib/python3.10/site-packages/tornado/httputil.py ]; then
+    sed -i -e 's/collections.MutableMapping/collections.abc.MutableMapping/' modui-env/lib/python3.10/site-packages/tornado/httputil.py
+elif [ -e modui-env/lib/python3.11/site-packages/tornado/httputil.py ]; then
+    sed -i -e 's/collections.MutableMapping/collections.abc.MutableMapping/' modui-env/lib/python3.11/site-packages/tornado/httputil.py
+elif [ -e modui-env/lib/python3.12/site-packages/tornado/httputil.py ]; then
+    sed -i -e 's/collections.MutableMapping/collections.abc.MutableMapping/' modui-env/lib/python3.12/site-packages/tornado/httputil.py
+    sed -i -e 's/import ssl/import _NOT_ssl/' modui-env/lib/python3.12/site-packages/tornado/netutil.py
+fi
+```
 
 Install python requirements::
 
